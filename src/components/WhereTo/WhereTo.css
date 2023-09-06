@@ -1,0 +1,20 @@
+.section__title {
+    margin: 0;
+    padding: 0;
+    font-family: Montserrat;
+    font-size: 2.25rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-bottom: 30px;
+}
+.where-to__block {
+    margin: 0;
+    padding: 20px;
+    background-color: #ffffff;
+    max-width: 100%;
+    max-height: 180px;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 1rem;
+}

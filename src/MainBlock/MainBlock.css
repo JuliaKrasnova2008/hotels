@@ -1,0 +1,11 @@
+.main-block {
+    margin: 0;
+    margin-bottom: 20px;
+    padding: 50px;
+    background-image: url("../images/glenn-carstens-peters-ZWD3Dx6aUJg-unsplash.jpg");
+    min-height: 500px;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
