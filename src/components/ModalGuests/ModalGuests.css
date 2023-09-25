@@ -54,20 +54,25 @@
     justify-content: space-between;
     align-items: flex-start;
     width: 520px;
-    min-height: 400px;
+    min-height: 500px;
+    max-height: 560px;
+    overflow-x: scroll;
     background-color: #ffffff;
     border-radius: 1rem;
     box-shadow: 0 2px 0.75rem rgba(12, 14, 28, 0.08);
     position: relative;
 }
+
 .modal-guests__guests {
     margin: 0;
     padding: 0;
+    padding-bottom: 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;
     width: 100%;
     margin-bottom: 40px;
+    border-bottom: dashed #d5d4d44a;
 }
 .modal-guests__guests-count {
     margin: 0;
@@ -89,6 +94,7 @@
 }
 .modal-guests__subtitle_room {
     font-weight: 400;
+    color: #1668e3;
 }
 .counter {
     margin: 0;

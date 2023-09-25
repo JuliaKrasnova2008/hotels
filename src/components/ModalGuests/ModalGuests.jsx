@@ -37,7 +37,9 @@ export default function ModalGuests({ isActive, setActive }) {
                     >Remove room</button>
                 }
 
-                <button className='modal-guests__button'>Done</button>
+                <button className='modal-guests__button'
+                    onClick={() => { setActive(false) }}
+                >Done</button>
             </div>
         </div>
 

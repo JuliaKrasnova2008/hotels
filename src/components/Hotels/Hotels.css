@@ -1,0 +1,11 @@
+.pages__main-content_hotels {
+    background-image: url(../../images/yayaq-destination-ptj2xDWxEJU-unsplash.jpg);
+}
+.hotels__list {
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+}

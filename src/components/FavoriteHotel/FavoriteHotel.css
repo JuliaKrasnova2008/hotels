@@ -1,0 +1,14 @@
+.hotel__favorite-page {
+    width: 50%;
+    margin: 70px;
+}
+.hotel__title_favorite-page {
+    width: 70%;
+}
+.hotel__favorite-btn_favorite-page {
+    right: 10px;
+}
+.hotel__svg-favorite_favorite-page {
+    position: absolute;
+    right: 10px;
+}

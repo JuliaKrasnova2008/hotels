@@ -4,14 +4,19 @@ import * as Yup from 'yup'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import ModalGuests from '../ModalGuests/ModalGuests'
 import { useDispatch, useSelector } from 'react-redux'
-import { setSearch } from '../../redux/slices/filterReducer'
-import { baseUrl, domain, headers } from '../../utils/utils'
+import { selectAdultsAndChildren, setRegionId, setSearch } from '../../redux/slices/filterReducer'
+import { baseUrl, domain, headers, whereToIcons } from '../../utils/utils'
 import axios from 'axios'
+import { setHotels } from '../../redux/slices/hotelReducer'
 export default function WhereToForm() {
 
     const [active, setActive] = useState(false)
     const guests = useSelector((state) => state.filter.guests)
     const search = useSelector((state) => state.filter.search)
+    const regionId = useSelector((state) => state.filter.regionId)
+
+    //через деструктуризацию достаю то, что находила в редаксе
+    const { adultsCount, childrenAgesArr } = useSelector(selectAdultsAndChildren());
 
     const dispatch = useDispatch();
     const [close, setClose] = useState(true)
@@ -33,7 +38,6 @@ export default function WhereToForm() {
         if (search?.trim().length > 1) {
             axios.request(options).then((res) => {
                 setCity(res.data.data)
-                console.log(res.data.data);
             }).catch((err) => {
                 console.log(err);
             })
@@ -52,7 +56,32 @@ export default function WhereToForm() {
     })
 
     const onSubmit = (values) => {
-        // console.log(values);
+        console.log(values);
+        const options = {
+            method: 'GET',
+            url: `${baseUrl}/hotels/search`,
+            params: {
+                sort_order: 'REVIEW',
+                locale: 'en_GB',
+                checkin_date: values.checkIn,
+                adults_number: adultsCount,
+                domain,
+                region_id: regionId,
+                checkout_date: values.checkOut,
+                page_number: '1',
+                available_filter: 'SHOW_AVAILABLE_ONLY',
+                children_ages: childrenAgesArr.join(','),
+                star_rating_ids: '1,2,3,4,5',
+            },
+            headers,
+        };
+
+        axios.request(options).then((res) => {
+            dispatch(setHotels(res.data.properties))
+            console.log(res.data);
+        }).catch((err) => {
+            console.log(err);
+        })
     }
     return (
         <>
@@ -84,14 +113,21 @@ export default function WhereToForm() {
                                 {!close &&
                                     <ul className='search__list'>
                                         {
-                                            city.map((elem) => (
+                                            city.map((elem, index) => (
                                                 <li className='search__item'
+                                                    key={index}
                                                     onClick={() => {
                                                         dispatch(setSearch(elem.regionNames.displayName))
                                                         setClose(true)
+                                                        dispatch(setRegionId(elem.essId.sourceId))
                                                     }
                                                     }
-                                                >{elem.regionNames.displayName}</li>
+                                                >
+
+                                                    <img className='search__item-logo' src={whereToIcons[elem?.type]} />
+                                                    {elem.regionNames.displayName}
+                                                </li>
+
                                             ))}
 
                                         {
@@ -135,9 +171,10 @@ export default function WhereToForm() {
                                 onClick={() => setActive(true)}
                             >Guests
                                 <p className='where-to__subtitle'>
-                                    {guests.map((elem) => {
-                                        return elem.id + ' room, ' + (elem.adults + elem.children) + " travellers"
-                                    })}
+                                    {guests.length === 1 ? guests.length + ' room, ' + adultsCount + ' adults, ' + childrenAgesArr.length + ' children'
+                                        : guests.length + ' rooms, ' + adultsCount + ' adults, ' + childrenAgesArr.length + ' children'
+                                    }
+
                                 </p>
                             </button>
                             <button className='where-to__search' > Search</button>

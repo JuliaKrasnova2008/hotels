@@ -1,0 +1,11 @@
+.children-ages__select {
+    margin: 0;
+    padding: 3px;
+    border: 1px solid #00000029;
+    font-family: Montserrat;
+    font-size: 0.7rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    border-radius: 0.3em;
+}

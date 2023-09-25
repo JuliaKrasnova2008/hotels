@@ -16,12 +16,17 @@ const initialState = {
     5: [],
   },
   search: "",
+  regionId: "2872",
 };
 
 export const filterSlice = createSlice({
   name: "filter",
   initialState,
   reducers: {
+    setRegionId: (state, action) => {
+      let regionId = action.payload;
+      state.regionId = regionId;
+    },
     setSearch: (state, action) => {
       let search = action.payload;
       state.search = search;
@@ -85,8 +90,44 @@ export const filterSlice = createSlice({
         ].slice(0, -1);
       }
     },
+    setChildrenAge: (state, action) => {
+      const id = action.payload.id; //нашла id комнаты
+      const childrenIndex = action.payload.index; //нахожу индекс ребенка в массиве комнаты
+      const childrenAge = action.payload.childrenAge; //возраст, который мы передаем/выбираем при добавлении ребенка
+
+      state.childrenAges = {
+        ...state.childrenAges, //разворачиваю объект с возрастами детей и комнатами
+        [id]: [
+          //обращаюсь к ключу комнаты, внутри которой находится массив, через : меняю значение ключа на:
+          ...state.childrenAges[id].slice(0, childrenIndex), // методом slice беру часть массива индекса выбранного ребенка,, разворачиваю массив внутри комнаты
+          childrenAge, // элемент стоящий после этой части заменяю на выбранный возраст
+          ...state.childrenAges[id].slice(childrenIndex + 1), //копирую оставщуюся часть
+        ],
+        //например, у нас есть [1,2,3,4,5]. Нужно заменить 3 на 10
+        // Берем часть массива до 3 (это [1,2])
+        //Вместо 3 подставляем 10
+        //Берем оставщуюся ачсть массива  [4,5]
+      };
+    },
   },
 });
+
+//Кастомный селектор, с помощью которого мы достаем кол-во родителей и массив возрастов детей
+export const selectAdultsAndChildren = () => (state) => {
+  //ищем кол-во родителей
+  const adultsCount = state.filter.guests.reduce((prev, elem) => {
+    return prev + elem.adults;
+  }, 0);
+  //добавляю в один общий массив все возраста детей
+  //прохожусь по объекту childrenAges
+  const obj = state.filter.childrenAges;
+  const childrenAgesArr = [];
+  for (let key in obj) {
+    //в новый массив методом push разворачиваю старый массив по ключу
+    childrenAgesArr.push(...obj[key]);
+  }
+  return { adultsCount, childrenAgesArr };
+};
 
 export default filterSlice.reducer; //экспортируем хранилище
 export const {
@@ -95,4 +136,6 @@ export const {
   setCountMinus,
   removeGuests,
   setSearch,
+  setRegionId,
+  setChildrenAge,
 } = filterSlice.actions; //экспортируем функции (для удобства, чтобы потом обращаться напрямую)

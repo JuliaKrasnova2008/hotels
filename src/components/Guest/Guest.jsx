@@ -1,6 +1,7 @@
 import React from 'react'
+import './Guest.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { setCountMinus, setCountPlus } from '../../redux/slices/filterReducer';
+import { setChildrenAge, setCountMinus, setCountPlus } from '../../redux/slices/filterReducer';
 
 export default function Guest({ elem }) {
 
@@ -65,12 +66,24 @@ export default function Guest({ elem }) {
                 </div>
             </div>
             {
-                childrenAges[elem.id]?.map((elem) => {
-                    return <select className='children-ages__select'>
+                childrenAges[elem.id]?.map((child, childIndex) => {
+                    return <select className='children-ages__select'
+                        defaultValue={child}
+                        key={childIndex}
+                        onChange={(evt) => {
+                            dispatch(setChildrenAge({
+                                id: elem.id,
+                                index: childIndex,
+                                childrenAge: +evt.target.value, //если поставить +, то строка переводится в число
+                            }))
+                        }}
+                    >
                         {
-                            [...new Array(18)].map((elem, index) => index).map((elem) => {
-                                return <option className='children-ages__option' value={elem}>
-                                    {elem === 0 ? 'Under 1' : elem}</option>
+                            [...new Array(18)].map((_, index) => index).map((age) => {
+                                return <option className='children-ages__option'
+                                    key={age}
+                                    value={age}>
+                                    {age === 0 ? 'Under 1' : age}</option>
                             })
                         }
                     </select>

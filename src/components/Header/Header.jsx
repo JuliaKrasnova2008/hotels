@@ -1,7 +1,9 @@
 import React from 'react'
 import './Header.css'
 import logo from '../../images/logo.svg'
+import favorite from '../../images/favorite.svg'
 import { Link } from 'react-router-dom'
+
 
 export default function Header() {
     return (
@@ -13,6 +15,9 @@ export default function Header() {
                         .com
                     </span>
                 </h1>
+            </Link>
+            <Link to='/favorite' className='header__link header__link_favorite'>
+                <img className='header__favorite-img' src={favorite} />
             </Link>
         </div>
     )
