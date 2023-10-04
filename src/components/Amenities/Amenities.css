@@ -1,0 +1,19 @@
+.hotel-page__block_amenities {
+    align-items: flex-start;
+    flex-direction: column;
+}
+.summary__subtitle_amenities {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 40%;
+}
+.summary__items {
+    margin-bottom: 10px;
+    margin-left: 40px;
+}
+.summary__list_amenities {
+    max-height: 1000px;
+    flex-wrap: wrap;
+    align-content: space-between;
+}

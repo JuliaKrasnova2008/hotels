@@ -1,25 +1,49 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './HotelBigInfo.css'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteHotel, pushHotel, selectCurrentLikeHotel } from '../../redux/slices/favoriteReducer'
-import star from '../../images/star.svg'
+import Overview from '../Overview/Overview'
+import Location from '../../Location/Location'
+import AboutProperty from '../AboutProperty/AboutProperty'
+import { isInViewport } from '../../utils/utils'
+import Amenities from '../Amenities/Amenities'
+import Policies from '../Policies/Policies'
+import ModalFoto from '../ModalFoto/ModalFoto'
+import ModalPopularAmenities from '../ModalPopularAmenities/ModalPopularAmenities'
 
 
 export default function HotelBigInfo({ elem }) {
+    console.log(elem);
+
     const currentHotel = useSelector(selectCurrentLikeHotel(elem?.id)) //передаем id только тогда, когда элемент найден
     const dispatch = useDispatch();
-    const location = useLocation(); //поможет определить на какой якорной ссылке мы находимся
-    console.log(elem);
 
     const activeLink = 'nav-bar__item nav-bar__item_active'
     const normalLink = 'nav-bar__item'
+    const [active, setActive] = useState(0)
+    const overviewRef = useRef()
+    const locationRef = useRef()
+    const amenitiesRef = useRef()
+    const policiesRef = useRef()
+
+    //состояние модалки, нужно передать в пропсы для <Modal />
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
 
     function onScroll(evt) {
-        console.log(evt.target.documentElement.scrollTop + window.innerHeight); //выводим кол-во пикселей, которые мы проскролили от верха стр
-        console.log(overviewRef.current.getBoundingClientRect().top);//обращаюсь к ссылке элемента. по ключу current нахожу именно этот элемент и сохраняю его. возвращает все координаты нахождения элемента на стр
-        console.log(overviewRef.current.getBoundingClientRect().bottom);//обращаюсь к ссылке элемента. по ключу current нахожу именно этот элемент и сохраняю его. возвращает все координаты нахождения элемента на стр
-        console.log(document.documentElement.scrollHeight);//обращаюсь к ссылке элемента. по ключу current нахожу именно этот элемент и сохраняю его. возвращает все координаты нахождения элемента на стр
+        if (isInViewport(overviewRef.current)) {
+            setActive(1)
+        }
+        if (isInViewport(locationRef.current)) {
+            setActive(3)
+        }
+        if (isInViewport(amenitiesRef.current)) {
+            setActive(4)
+        }
+        if (isInViewport(policiesRef.current)) {
+            setActive(5)
+        }
     }
 
     useEffect(() => {
@@ -27,9 +51,7 @@ export default function HotelBigInfo({ elem }) {
         return () => window.removeEventListener('scroll', onScroll) //после ререндера/при размонтировании удаляем обработчик
     }, [])
 
-    //получает ссылку на html-элемент, мы можем в реальном времени отслеживать,где сейчас элемент
-    // в сам элемент добавляем ref={overviewRef}
-    const overviewRef = useRef()
+
 
     return (
         <div className='hotel-page'>
@@ -66,61 +88,49 @@ export default function HotelBigInfo({ elem }) {
                 {elem.propertyGallery?.images.slice(1, 5).map((elem, index) => {
                     return <li key={index} className='hotel-page__foto-item'><img className='hotel-page__foto' src={elem.image.url} /></li>
                 })}
-                <Link className='hotel-page__more-foto'>
+                <button className='hotel-page__more-foto'
+                    onClick={() => setModalIsOpen(true)}
+                >
                     <i className="uil uil-image-plus"></i>
-                </Link>
+                    <p>{elem.propertyGallery?.images.length - 1 + "+"}</p>
+                </button>
             </ul>
 
             <div className='hotel-page__block hotel-page__block_sticky'>
                 <div className='nav-bar__list'>
-                    <a href='#overview' className={location ? activeLink : normalLink}>
+                    <a href='#overview' className={active === 1 ? activeLink : normalLink}>
                         Overview
                     </a>
-                    <a href='#rooms' className={location ? activeLink : normalLink}>
+                    <a href='#rooms' className={normalLink}>
                         Rooms
                     </a>
-                    <a href='#location' className={location ? activeLink : normalLink} >
+                    <a href='#location' className={active === 3 ? activeLink : normalLink} >
                         Location
                     </a>
-                    <a href='#amenities' className={location ? activeLink : normalLink} >
+                    <a href='#amenities' className={active === 4 ? activeLink : normalLink} >
                         Amenities
                     </a>
-                    <a href='#policies' className={location ? activeLink : normalLink} >
+                    <a href='#policies' className={active === 5 ? activeLink : normalLink} >
                         Policies
                     </a>
                 </div>
             </div>
-
-            <div className='hotel-page__block' id="overview" ref={overviewRef}>
-                <h4 className='hotel-page__title'>{elem.summary?.overview.accessibilityLabel}</h4>
-                <div className='hotel__stars'>
-                    {
-                        [...new Array(elem.summary?.overview.propertyRating.rating)].map((elem, index) => {
-                            return <img className='hotel__svg-star' src={star} key={index} />
-                        })
-                    }
-                </div>
-            </div>
+            <Overview elem={elem} id="overview" overviewRef={overviewRef} />
 
             <div className='hotel-page__block' id="rooms">
                 Rooms
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque pariatur nemo saepe, numquam reiciendis non excepturi, sapiente nisi doloribus hic repudiandae. Quidem deleniti eveniet, quas, blanditiis ab voluptates illum cupiditate error deserunt in vel similique aut totam magnam placeat quod consequatur cumque nobis laborum nostrum vero repudiandae optio magni quam? Sit laborum nisi magni atque. Fugiat incidunt dolore officiis recusandae, maxime numquam delectus dolor voluptas libero cum, quo quod iure. Accusantium et animi beatae est dicta nam hic? Magni incidunt fuga numquam commodi aliquam reiciendis unde atque libero sunt corrupti ullam quisquam temporibus consequatur, error dicta ex, voluptatum consectetur ipsam!</p>
             </div>
 
-            <div className='hotel-page__block' id="location">
-                Location
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque pariatur nemo saepe, numquam reiciendis non excepturi, sapiente nisi doloribus hic repudiandae. Quidem deleniti eveniet, quas, blanditiis ab voluptates illum cupiditate error deserunt in vel similique aut totam magnam placeat quod consequatur cumque nobis laborum nostrum vero repudiandae optio magni quam? Sit laborum nisi magni atque. Fugiat incidunt dolore officiis recusandae, maxime numquam delectus dolor voluptas libero cum, quo quod iure. Accusantium et animi beatae est dicta nam hic? Magni incidunt fuga numquam commodi aliquam reiciendis unde atque libero sunt corrupti ullam quisquam temporibus consequatur, error dicta ex, voluptatum consectetur ipsam!</p>
-            </div>
 
-            <div className='hotel-page__block' id="amenities">
-                Amenities
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque pariatur nemo saepe, numquam reiciendis non excepturi, sapiente nisi doloribus hic repudiandae. Quidem deleniti eveniet, quas, blanditiis ab voluptates illum cupiditate error deserunt in vel similique aut totam magnam placeat quod consequatur cumque nobis laborum nostrum vero repudiandae optio magni quam? Sit laborum nisi magni atque. Fugiat incidunt dolore officiis recusandae, maxime numquam delectus dolor voluptas libero cum, quo quod iure. Accusantium et animi beatae est dicta nam hic? Magni incidunt fuga numquam commodi aliquam reiciendis unde atque libero sunt corrupti ullam quisquam temporibus consequatur, error dicta ex, voluptatum consectetur ipsam!</p>
-            </div>
+            <Location elem={elem} id="location" locationRef={locationRef} />
+            <AboutProperty elem={elem} id="location" />
 
-            <div className='hotel-page__block' id="policies">
-                Policies
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque pariatur nemo saepe, numquam reiciendis non excepturi, sapiente nisi doloribus hic repudiandae. Quidem deleniti eveniet, quas, blanditiis ab voluptates illum cupiditate error deserunt in vel similique aut totam magnam placeat quod consequatur cumque nobis laborum nostrum vero repudiandae optio magni quam? Sit laborum nisi magni atque. Fugiat incidunt dolore officiis recusandae, maxime numquam delectus dolor voluptas libero cum, quo quod iure. Accusantium et animi beatae est dicta nam hic? Magni incidunt fuga numquam commodi aliquam reiciendis unde atque libero sunt corrupti ullam quisquam temporibus consequatur, error dicta ex, voluptatum consectetur ipsam!</p>
-            </div>
+            <Amenities elem={elem} id="amenities" amenitiesRef={amenitiesRef} />
+
+            <Policies elem={elem} id="policies" policiesRef={policiesRef} />
+
+            <ModalFoto active={modalIsOpen} setActive={setModalIsOpen} elem={elem} />
         </div>
     )
 }

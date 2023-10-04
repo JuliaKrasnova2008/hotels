@@ -1,0 +1,11 @@
+.hotel-page__block_about-property {
+    flex-direction: column;
+}
+.about-property {
+    display: flex;
+    padding-bottom: 30px;
+}
+.about-property:not(:last-of-type) {
+    border-bottom: 1px solid #dfe0e4;
+    margin-bottom: 30px;
+}

@@ -1,0 +1,24 @@
+.modal__list.modal__list_amenities {
+    width: 35%;
+    top: 20%;
+    height: 600px;
+    overflow-x: scroll;
+}
+.summary__list_amenities-modal {
+}
+.amenities-modal__list {
+    overflow-x: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.amenities__item_modal {
+    width: 40%;
+}
+.amenities__list.amenities__list_modal {
+    width: 90%;
+    flex-direction: row;
+    max-height: 100%;
+    margin-bottom: 20px;
+    justify-content: space-between;
+}

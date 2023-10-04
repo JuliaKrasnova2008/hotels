@@ -23,7 +23,6 @@ export default function HotelPage() {
     axios.request(options)
       .then((res) => {
         setHotelPage(res.data)
-        console.log(res.data);
       })
       .catch((err) => {
         console.log(err);

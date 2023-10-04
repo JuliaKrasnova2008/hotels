@@ -41,10 +41,10 @@ export default function Hotel(elem) {
 
             <div className='hotel__info'>
                 <div className='hotel__main-info'>
-                    <h4 className='hotel__title'>{elem.elem.name}</h4>
+                    <h4 className='hotel__title'>{elem?.elem?.name}</h4>
                     <div className='hotel__stars'>
                         {
-                            [...new Array(elem.elem.star)].map((elem, index) => {
+                            [...new Array(Math.round(elem.elem?.star))].map((elem, index) => {
                                 return <img className='hotel__svg-star' src={star} key={index} />
                             })
                         }
